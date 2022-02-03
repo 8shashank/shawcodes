@@ -1,7 +1,12 @@
 {
-    "route": "/*",
-    "allowedRoles": ["anonymous"],
+    "routes": [
+        {
+            "route": "/*",
+            "allowedRoles": ["anonymous"]
+        }
+    ],
     "navigationFallback": {
-        "rewrite": "/index.html"
+        "rewrite": "/index.html",
+        "exclude": ["/images/*.{png,jpg,gif}", "/css/*"]
     }
   }
