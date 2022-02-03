@@ -106,7 +106,7 @@ export const USCISDecoder = () => {
             return;
         }
 
-        const validReceiptNumber = receiptNumber.replace(/[^a-z0-9]/gmi, "").replace(/\s+/g, "");
+        const validReceiptNumber = receiptNumber.replace(/[^a-z0-9]/gmi, "").replace(/\s+/g, "").toUpperCase();
         const parsedValues = {
             serviceCenter: splitOrEmpty(validReceiptNumber, 0, 3),
             fiscalYear: splitOrEmpty(validReceiptNumber, 3, 2),
@@ -116,7 +116,7 @@ export const USCISDecoder = () => {
             caseNumber: splitOrEmpty(validReceiptNumber, 8, 5)
         };
         setParsedReceipt(parsedValues);
-    }, [receiptNumber])
+    }, [receiptNumber]);
 
     return (
         <React.Fragment>
