@@ -48,10 +48,6 @@ const getNthWorkingDay = (fiscalYear, computerDay) => {
     const nextDate = new Date(startDate);
     while (computerDayCount < computerDayParsed) {
         nextDate.setDate(nextDate.getDate() + 1);
-        // Max days reached, early exit
-        if (nextDate.getFullYear()===fiscalYearParsed+1 && nextDate.getMonth()===8 && nextDate.getDay() === 30) {
-            return nextDate.toDateString();
-        }
         if (!fedHolidays.isAHoliday(nextDate)) {
             computerDayCount += 1;
         }
