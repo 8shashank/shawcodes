@@ -45,17 +45,12 @@ const addDays = (startDate, computerDays) => {
     const nextDate = new Date(startDate);
 
     let computerDayCount = 0;
-    let holidayCount = 0;
     while (computerDayCount < computerDays) {
         nextDate.setDate(nextDate.getDate() + 1);
-        if (holidayCache[nextDate.getFullYear()][getDateKey(nextDate)]) {
-            holidayCount += 1;
-        }
-        else {
+        if (!holidayCache[nextDate.getFullYear()][getDateKey(nextDate)]) {
             computerDayCount += 1;
         }
     }
-    nextDate.setDate(nextDate.getDate() - holidayCount);
 
     return nextDate;
 }
@@ -136,7 +131,7 @@ export const USCISDecoder = () => {
         }
         else {
             const dayOfYearIncomplete = parseInt(parsedReceipt.dayOfYearIncomplete);
-            const minWorkingDays = dayOfYearIncomplete * (10 ** (3 - parsedReceipt.dayOfYearIncomplete.length));
+            const minWorkingDays = Math.max(1, dayOfYearIncomplete * (10 ** (3 - parsedReceipt.dayOfYearIncomplete.length)));
             const maxWorkingDays = Math.min(minWorkingDays + 10 ** (3 - parsedReceipt.dayOfYearIncomplete.length) - 1, 365);
             setRange(getNthWorkingDayRange(fiscalYear, minWorkingDays, maxWorkingDays))
         }
