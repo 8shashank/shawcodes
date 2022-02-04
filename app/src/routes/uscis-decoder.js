@@ -67,11 +67,17 @@ const getNthWorkingDayRange = (fiscalYear, computerDayStart, computerDayEnd) => 
     const computerDayStartParsed = parseInt(computerDayStart);
     const computerDayEndParsed = parseInt(computerDayEnd);
     const startDate = new Date(fiscalYearParsed - 1, 8, 30);
+    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
 
     const minDate = addDays(startDate, computerDayStartParsed);
+    const weekendDaysApprox = 2*Math.min((Math.abs((minDate - startDate) / oneDay))/7);
+    const conservativeMinDate = new Date(minDate);
+    conservativeMinDate.setDate(conservativeMinDate.getDate()-weekendDaysApprox);
+
     const maxDate = addDays(minDate, computerDayEndParsed - computerDayStartParsed);
+
     return {
-        min: minDate.toDateString(),
+        min: conservativeMinDate.toDateString(),
         max: maxDate.toDateString()
     };
 }
