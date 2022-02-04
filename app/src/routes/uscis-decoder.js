@@ -24,7 +24,6 @@ const serviceCenters = {
     '': ''
 };
 
-
 const splitOrEmpty = (text, startIdx, count) => {
     const endIdx = startIdx + count;
     if (!text || text.length < endIdx) {
@@ -40,27 +39,26 @@ const splitOrMax = (text, startIdx, count) => {
 }
 
 const holidayCache = {};
-const getDateKey = (date)=>date.getMonth()*10**2+date.getDate();
+const getDateKey = (date) => date.getMonth() * 10 ** 2 + date.getDate();
 
-const addDays = (startDate, computerDays)=> {
+const addDays = (startDate, computerDays) => {
     const nextDate = new Date(startDate);
 
     let computerDayCount = 0;
     let holidayCount = 0;
-    while(computerDayCount<computerDays) {
-        nextDate.setDate(nextDate.getDate()+1);
+    while (computerDayCount < computerDays) {
+        nextDate.setDate(nextDate.getDate() + 1);
         if (holidayCache[nextDate.getFullYear()][getDateKey(nextDate)]) {
-            holidayCount+=1;
+            holidayCount += 1;
         }
         else {
-            computerDayCount+=1;
+            computerDayCount += 1;
         }
     }
-    nextDate.setDate(nextDate.getDate()-holidayCount);
+    nextDate.setDate(nextDate.getDate() - holidayCount);
 
     return nextDate;
 }
-
 
 const getNthWorkingDay = (fiscalYear, computerDay) => {
     const fiscalYearParsed = parseInt(fiscalYear);
@@ -76,14 +74,12 @@ const getNthWorkingDayRange = (fiscalYear, computerDayStart, computerDayEnd) => 
     const startDate = new Date(fiscalYearParsed - 1, 8, 30);
 
     const minDate = addDays(startDate, computerDayStartParsed);
-    const maxDate = addDays(minDate, computerDayEndParsed-computerDayStartParsed);
+    const maxDate = addDays(minDate, computerDayEndParsed - computerDayStartParsed);
     return {
         min: minDate.toDateString(),
         max: maxDate.toDateString()
     };
 }
-
-
 
 export const USCISDecoder = () => {
     const [receiptNumber, setReceiptNumber] = useState('');
@@ -100,21 +96,21 @@ export const USCISDecoder = () => {
 
     useMemo(() => {
         const yearSuffix = parseInt(parsedReceipt.fiscalYear);
-        if (isNaN(yearSuffix)){
+        if (isNaN(yearSuffix)) {
             setFiscalYear(null);
             return;
         }
 
-        const year = 2000+yearSuffix;
+        const year = 2000 + yearSuffix;
         setFiscalYear(year)
         if (!holidayCache[year]) {
-            holidayCache[year] = fedHolidays.allForYear(year).reduce((cache, {date})=>{
+            holidayCache[year] = fedHolidays.allForYear(year).reduce((cache, { date }) => {
                 cache[getDateKey(date)] = true;
                 return cache;
             }, {});
         }
-        if (!holidayCache[year-1]) {
-            holidayCache[year-1] = fedHolidays.allForYear(year-1).reduce((cache, {date})=>{
+        if (!holidayCache[year - 1]) {
+            holidayCache[year - 1] = fedHolidays.allForYear(year - 1).reduce((cache, { date }) => {
                 cache[getDateKey(date)] = true;
                 return cache;
             }, {});
@@ -134,14 +130,14 @@ export const USCISDecoder = () => {
         setCaseNumber(parsedReceipt.caseNumber)
     }, [parsedReceipt.caseNumber])
 
-    useMemo(()=> {
-        if(!parsedReceipt.dayOfYearIncomplete || parsedReceipt.dayOfYearIncomplete.length === 0 || parsedReceipt.dayOfYearIncomplete.length === 3) {
+    useMemo(() => {
+        if (!parsedReceipt.dayOfYearIncomplete || parsedReceipt.dayOfYearIncomplete.length === 0 || parsedReceipt.dayOfYearIncomplete.length === 3) {
             setRange(null);
         }
         else {
             const dayOfYearIncomplete = parseInt(parsedReceipt.dayOfYearIncomplete);
-            const minWorkingDays = dayOfYearIncomplete*(10**(3-parsedReceipt.dayOfYearIncomplete.length));
-            const maxWorkingDays = Math.min(minWorkingDays+10**(3-parsedReceipt.dayOfYearIncomplete.length)-1, 365);
+            const minWorkingDays = dayOfYearIncomplete * (10 ** (3 - parsedReceipt.dayOfYearIncomplete.length));
+            const maxWorkingDays = Math.min(minWorkingDays + 10 ** (3 - parsedReceipt.dayOfYearIncomplete.length) - 1, 365);
             setRange(getNthWorkingDayRange(fiscalYear, minWorkingDays, maxWorkingDays))
         }
     }, [fiscalYear, parsedReceipt.dayOfYearIncomplete]);
@@ -170,8 +166,8 @@ export const USCISDecoder = () => {
                 {serviceCenter && <p>{`The service center is ${serviceCenter}`}</p>}
                 {fiscalYear && <p>{`The fiscal year is ${fiscalYear}`}</p>}
                 {range && <p>{`The approximate range is between ${range.min} and ${range.max}`}<div class="tooltip">*
-                        <span class="tooltiptext">Because USCIS also works weekends nowadays, we are counting weekends and only excluding federal holidays. However this may be more inaccurate for older cases.</span>
-                    </div></p>}
+                    <span class="tooltiptext">Because USCIS also works weekends nowadays, we are counting weekends and only excluding federal holidays. However this may be more inaccurate for older cases.</span>
+                </div></p>}
                 {dayOfYear && <p>
                     {`The day of year is approximately ${dayOfYear}`}<div class="tooltip">*
                         <span class="tooltiptext">Because USCIS also works weekends nowadays, we are counting weekends and only excluding federal holidays. However this may be more inaccurate for older cases.</span>
