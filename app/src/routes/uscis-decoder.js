@@ -77,7 +77,8 @@ const getNthWorkingDayRange = (fiscalYear, computerDayStart, computerDayEnd) => 
     const maxDate = addDays(minDate, computerDayEndParsed - computerDayStartParsed);
 
     return {
-        min: conservativeMinDate.toDateString(),
+        min: minDate.toDateString(),
+        conservativeMin: conservativeMinDate.toDateString(),
         max: maxDate.toDateString()
     };
 }
@@ -166,9 +167,9 @@ export const USCISDecoder = () => {
             <div>
                 {serviceCenter && <p>{`The service center is ${serviceCenter}`}</p>}
                 {fiscalYear && <p>{`The fiscal year is ${fiscalYear}`}</p>}
-                {range && <p>{`The approximate range is between ${range.min} and ${range.max}`}<div class="tooltip">*
+                {range && <p>{`The approximate range is between ${range.min} and ${range.max}`}<br /><p className="smaller">{`(But it could be as low as ${range.conservativeMin})`}<div class="tooltip">*
                     <span class="tooltiptext">Because USCIS also works weekends nowadays, we are counting weekends and only excluding federal holidays. However this may be more inaccurate for older cases.</span>
-                </div></p>}
+                </div></p></p>}
                 {dayOfYear && <p>
                     {`The day of year is approximately ${dayOfYear}`}<div class="tooltip">*
                         <span class="tooltiptext">Because USCIS also works weekends nowadays, we are counting weekends and only excluding federal holidays. However this may be more inaccurate for older cases.</span>
