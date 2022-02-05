@@ -184,7 +184,7 @@ export const USCISDecoder = () => {
                 {range && <p>{`The approximate range is between ${range.min} and ${range.max}`}<br /><p className="smaller">{`(But it could be as low as ${range.conservativeMin})`}<div class="tooltip">*
                     <span class="tooltiptext">Because USCIS also works weekends nowadays, we are counting weekends and only excluding federal holidays. However this may be more inaccurate for older cases.</span>
                 </div></p></p>}
-                {!range && parsedReceipt.dayOfYearIncomplete && <p>{'This tool currently only works for SC cases and not lockbox.'}</p>}
+                {!range && !dayOfYear && parsedReceipt.dayOfYearIncomplete && <p>{'This tool currently only works for SC cases and not lockbox.'}</p>}
                 {dayOfYear && <p>
                     {`The day of year is approximately ${dayOfYear}`}<div class="tooltip">*
                         <span class="tooltiptext">Because USCIS also works weekends nowadays, we are counting weekends and only excluding federal holidays. However this may be more inaccurate for older cases.</span>
