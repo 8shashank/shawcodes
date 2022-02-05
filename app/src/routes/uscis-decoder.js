@@ -63,7 +63,8 @@ const getNthWorkingDay = (fiscalYear, computerDay) => {
     const fiscalYearParsed = parseInt(fiscalYear);
     const computerDayParsed = parseInt(computerDay);
     const startDate = new Date(fiscalYearParsed - 1, 8, 30);
-    return addDays(startDate, computerDayParsed).toDateString();
+    const endDate = addDays(startDate, computerDayParsed)
+    return endDate && endDate.toDateString();
 }
 
 const getNthWorkingDayRange = (fiscalYear, computerDayStart, computerDayEnd) => {
