@@ -47,7 +47,11 @@ const addDays = (startDate, computerDays) => {
     let computerDayCount = 0;
     while (computerDayCount < computerDays) {
         nextDate.setDate(nextDate.getDate() + 1);
-        if (!holidayCache[nextDate.getFullYear()][getDateKey(nextDate)]) {
+        const holidaysForYear = holidayCache[nextDate.getFullYear()];
+        if (!holidaysForYear) {
+            return null;
+        }
+        if (!holidaysForYear[getDateKey(nextDate)]) {
             computerDayCount += 1;
         }
     }
@@ -70,11 +74,17 @@ const getNthWorkingDayRange = (fiscalYear, computerDayStart, computerDayEnd) => 
     const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
 
     const minDate = addDays(startDate, computerDayStartParsed);
+    if (minDate === null) {
+        return null;
+    }
     const weekendDaysApprox = 2*Math.min((Math.abs((minDate - startDate) / oneDay))/7);
     const conservativeMinDate = new Date(minDate);
     conservativeMinDate.setDate(conservativeMinDate.getDate()-weekendDaysApprox);
 
     const maxDate = addDays(minDate, computerDayEndParsed - computerDayStartParsed);
+    if (maxDate === null) {
+        return null;
+    }
 
     return {
         min: minDate.toDateString(),
@@ -138,6 +148,10 @@ export const USCISDecoder = () => {
         }
         else {
             const dayOfYearIncomplete = parseInt(parsedReceipt.dayOfYearIncomplete);
+            if (isNaN(dayOfYearIncomplete)){
+                setRange(null);
+                return;
+            }
             const minWorkingDays = Math.max(1, dayOfYearIncomplete * (10 ** (3 - parsedReceipt.dayOfYearIncomplete.length)));
             const maxWorkingDays = Math.min(minWorkingDays + 10 ** (3 - parsedReceipt.dayOfYearIncomplete.length) - 1, 365);
             setRange(getNthWorkingDayRange(fiscalYear, minWorkingDays, maxWorkingDays))
@@ -170,6 +184,7 @@ export const USCISDecoder = () => {
                 {range && <p>{`The approximate range is between ${range.min} and ${range.max}`}<br /><p className="smaller">{`(But it could be as low as ${range.conservativeMin})`}<div class="tooltip">*
                     <span class="tooltiptext">Because USCIS also works weekends nowadays, we are counting weekends and only excluding federal holidays. However this may be more inaccurate for older cases.</span>
                 </div></p></p>}
+                {!range && parsedReceipt.dayOfYearIncomplete && <p>{'This tool currently only works for SC cases and not lockbox.'}</p>}
                 {dayOfYear && <p>
                     {`The day of year is approximately ${dayOfYear}`}<div class="tooltip">*
                         <span class="tooltiptext">Because USCIS also works weekends nowadays, we are counting weekends and only excluding federal holidays. However this may be more inaccurate for older cases.</span>
