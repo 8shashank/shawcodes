@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { USCISDecoder } from './routes/uscis-decoder';
+import { ReadingList } from './routes/reading-list';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -12,6 +13,7 @@ ReactDOM.render(
     <Routes>
       <Route path="/" element={<App />} >
         <Route path="uscis" element={<USCISDecoder />} />
+        <Route path="bookmarks" element={<ReadingList />} />
       </Route>
     </Routes>
     </BrowserRouter>
